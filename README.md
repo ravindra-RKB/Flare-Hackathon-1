@@ -1,14 +1,16 @@
   FLAIR TRUST :
 
-Real-Time Reputation & Trust Score for Community-Driven Data on Flare
+REAL-TIME REPUTATION AND TRUST SCORE FOR COMMUNITY-DRIVEN DATA ON FLARE
 
-🎯 Project Overview
+1.PROJECT OVERVIEW
+
 This project builds a decentralized reputation and trust scoring system on the Flare blockchain. It enables community-driven data platforms to track and reward accurate data submissions while punishing false or spam data.
 
-Key Innovation: Combine Flare's built-in oracles (FTSO/FDC) with on-chain reputation mechanisms to create a trustless system where data accuracy is automatically verified and rewarded.
+The key innovation is to combine Flare's built-in oracles (FTSO and FDC) with on-chain reputation mechanisms to create a trustless system where data accuracy is automatically verified and rewarded.
 
-🔥 Problem Statement
-In Web3 ecosystems (marketplaces, data-sharing platforms, DAO governance):
+2.PROBLEM STATEMENT
+
+In Web3 ecosystems like marketplaces, data-sharing platforms, and DAO governance:
 
 Users can be anonymous or pseudonymous
 
@@ -18,245 +20,161 @@ False data reduces platform credibility and discourages honest participation
 
 There's no standardized reputation layer to track data quality across decentralized systems
 
-Solution: An on-chain reputation system that automatically evaluates submissions against real-world data (via Flare oracles) and maintains a permanent, verifiable trust score for each wallet.
+The solution is an on-chain reputation system that automatically evaluates submissions against real-world data through Flare oracles and maintains a permanent, verifiable trust score for each wallet.
 
-✨ Solution & Features
-Core Mechanism
-Data Submission → Users submit data (reviews, sensor readings, reports) with a token stake
+3.SOLUTION AND FEATURES
 
-Community Validation → Other users validate submissions (true/false votes)
+The core mechanism works like this:
 
-Oracle Verification → Smart contract compares submissions against Flare's Time Series Oracle (FTSO) or Data Connector (FDC)
+Step 1: Data Submission - Users submit data like reviews, sensor readings, or reports with a token stake as security deposit.
 
-Reputation Update →
+Step 2: Community Validation - Other users validate the submissions by voting true or false.
 
-✅ Correct data → Reputation ↑, Stake returned + Rewards
+Step 3: Oracle Verification - The smart contract compares submissions against Flare's Time Series Oracle or Data Connector to check real-world truth.
 
-❌ False data → Reputation ↓, Stake slashed
+Step 4: Reputation Update - If data is correct, the submitter's reputation score increases and they get their stake back plus rewards. If the data is false, their reputation decreases and part of their stake is slashed.
 
-Trust Score Published → Score stored on-chain, queryable by any dApp
+Step 5: Trust Score Published - The reputation score is stored on-chain and any dApp can read it to know how trustworthy a wallet is.
 
-Benefits
-Transparency – All reputation updates visible and auditable on-chain
+4.Benefits of this system:
 
-Tamper-proof – Blockchain immutability ensures scores cannot be secretly changed
+Transparency: All reputation updates are visible and can be audited on the blockchain
 
-Reusable – Other Flare dApps can query reputation scores for risk assessment
+Tamper-proof: Blockchain immutability ensures scores cannot be secretly changed
 
-Incentive-aligned – Staking + slashing economically encourage honest behavior
+Reusable: Other Flare dApps can check reputation scores for risk assessment
 
-Decentralized – No central authority decides who to trust; code & consensus do
+Incentive-aligned: Staking and slashing economically encourage honest behavior
 
-🛠 Tech Stack
-Layer	Technology	Purpose
-Blockchain	Flare Network (PoS, EVM-compatible)	Secure, data-focused L1 with built-in oracles
-Smart Contracts	Solidity (EVM)	On-chain reputation logic, staking, validation
-Development	Hardhat	Compilation, testing, deployment
-Frontend	Next.js + React	User interface for submission & interaction
-Web3 Integration	ethers.js / web3.js	Wallet connection & contract interaction
-Oracle Data	Flare FTSO / Data Connector	Real-world data for verification
-📐 Smart Contract Architecture
-Key Contracts
-ReputationSystem.sol – Main contract managing reputation, submissions, and validation
+Decentralized: No central authority decides who to trust; code and consensus do it
 
-State Variables
-text
-mapping(address => uint256) reputation;          // Wallet → Reputation Score
-mapping(uint256 => Submission) submissions;       // ID → Submission Details
-uint256 submissionCount;                         // Total submissions
-Core Structs
-text
-struct Submission {
-    uint256 id;
-    address submitter;
-    string dataHash;              // Hash of submitted data
-    uint256 timestamp;
-    uint256 stake;
-    bool finalized;
-    bool isCorrect;               // Oracle-verified correctness
-}
-Key Functions
-Function	Purpose
-submitData(dataHash, stake)	User submits data with locked stake
-validateData(submissionId, vote)	Community votes on submission accuracy
-finalizeSubmission(submissionId)	Oracle checks & updates reputation
-getReputation(address)	Query reputation score for any wallet
-getSubmission(submissionId)	View submission details & status
-Reputation Logic
-Correct submission: reputation[user] += 10, return stake + 2 reward tokens
+5.TECH STACK
 
-False submission: reputation[user] -= 20, slash 30% of stake
+For the blockchain layer, we use Flare Network which is a Proof of Stake EVM-compatible blockchain. Flare is special because it has built-in oracles called FTSO and Data Connector to bring real-world data on-chain.
 
-Minimum reputation: -100 (prevents unlimited negative scores)
+For smart contracts, we write Solidity code which is the standard language for EVM blockchains.
 
-📊 Data Flow
-text
-User submits data
-    ↓
-[Front-end] → Calls submitData() with dataHash + stake amount
-    ↓
-[Smart Contract] → Records submission, locks stake
-    ↓
-[Community Validates] → Other users vote true/false via validateData()
-    ↓
-[Finalization] → Contract queries Flare FTSO/FDC for real-world comparison
-    ↓
-[Reputation Update] → 
-    If match → ↑ reputation, return stake + rewards
-    If mismatch → ↓ reputation, slash stake
-    ↓
-[On-chain Record] → Score stored in contract.reputation[address]
-    ↓
-[Query & Reuse] → Any dApp calls getReputation() to check trustworthiness
-🚀 Getting Started
-Prerequisites
-Node.js >= 16
+For development, we use Hardhat which helps us compile, test, and deploy smart contracts.
 
-npm or yarn
+For the frontend, we use Next.js with React to build the user interface.
 
-MetaMask or compatible EVM wallet
+For Web3 integration, we use ethers.js or web3.js to connect the frontend to the wallet and smart contract.
 
-Flare Coston2 testnet tokens (free faucet)
+For data verification, we query Flare's FTSO (Flare Time Series Oracle) and Data Connector to get real-world data.
 
-Installation
-1. Clone the repository
+6.SMART CONTRACT ARCHITECTURE
 
-bash
-git clone https://github.com/ravindra-RKB/Flare-Hackathon-1.git
-cd Flare-Hackathon-1
-2. Backend (Smart Contracts)
+The main smart contract is called ReputationSystem.sol.
 
-bash
-cd contracts
-npm install
-npx hardhat compile
-npx hardhat run scripts/deploy.js --network coston2
-3. Frontend
+It stores data using mappings and structs:
 
-bash
-cd ../frontend/app
-npm install
-npm run dev
-Visit http://localhost:3000 in your browser, connect your wallet, and start submitting data!
+A mapping called reputation that links each wallet address to their reputation score number
 
-🔗 Blockchain Concepts Used
-Consensus & Security
-Proof of Stake (PoS): Flare uses PoS to order blocks and secure the network; validators with staked coins propose and attest blocks
+A mapping called submissions that links each submission ID to its full submission details
 
-Immutability: Once submitted to a block, reputation scores and submissions cannot be changed without consensus
+A counter called submissionCount to track total submissions
 
-Smart Contracts: Solidity code enforces reputation rules automatically; no admin can cheat or bypass logic
+A Submission contains these details:
 
-Oracles
-Flare Time Series Oracle (FTSO): Aggregates real-world price/data feeds from multiple data providers
+id: unique number of the submission
 
-Data Connector (FDC): Provides additional external data streams
+submitter: the wallet address that submitted it
 
-Verification: Smart contract queries oracle data to auto-verify submission accuracy
+dataHash: a hash of the actual data submitted
 
-State Management
-Mappings: Efficient lookup of reputation scores by address
+timestamp: when it was submitted
 
-Structs: Group submission details (id, submitter, data, stake, status)
+stake: how much tokens were locked as security
 
-Events: Emit logs when submissions are added/finalized for easy front-end tracking
+finalized: whether the submission has been checked
 
-🎮 How to Use
-As a Data Submitter
-Connect wallet to dApp
+isCorrect: whether the oracle verified it as correct
 
-Enter data (e.g., weather reading, review, report)
+The main functions the contract provides are:
 
-Approve stake amount (e.g., 10 tokens)
+submitData function: A user calls this to submit data along with a stake amount. The contract records the submission and locks the tokens.
 
-Click "Submit Data"
+validateData function: Other users call this to vote whether a submission is true or false.
 
-Transaction signed by wallet → stored on-chain
+finalizeSubmission function: This is called to check the submission against oracle data and update the reputation score.
 
-As a Validator
-Browse pending submissions
+getReputation function: This is a read-only function that returns the reputation score for any wallet address.
 
-Review data and decide: true or false?
+getSubmission function: This returns all the details of a specific submission.
 
-Vote via contract function
+The reputation logic works like this:
 
-Earn small validation rewards if majority agrees
+When a submission is verified as correct by the oracle, the submitter's reputation increases by 10 points, and they get their stake back plus 2 reward tokens.
 
-Check Your Reputation
-View your reputation score in the dApp dashboard
+When a submission is found to be false, the submitter's reputation decreases by 20 points and 30 percent of their stake is taken away.
 
-Score = number of correct submissions minus penalties
+Reputation scores cannot go below minus 100 to prevent unlimited negative scores.
 
-Higher score = more trusted by the community
+7.DATA FLOW EXPLANATION
 
-📈 Why Flare?
-Data-Focused Blockchain – Built specifically to bring real-world data on-chain securely
+The complete flow is:
 
-Native Oracles – FTSO & FDC integrated; no need for external oracle contracts
+First, a user submits data. They open the frontend application and fill in the data they want to submit, then approve the token stake amount.
 
-EVM-Compatible – Write Solidity code, reuse Ethereum tools (Hardhat, ethers.js)
+The frontend calls the submitData function on the smart contract with the data hash and stake amount. The user's wallet pops up and asks for confirmation, then signs the transaction.
 
-Fast & Low-Cost – PoS consensus is efficient; cheaper gas than Ethereum mainnet
+The smart contract records this submission, saves it to the submissions mapping, and locks the user's tokens.
 
-Growing Ecosystem – Reputation systems are mission-critical for Flare's data marketplace vision
+Next, other community members see this new submission and decide whether it is true or false. They call the validateData function to vote.
 
-🔒 Security Considerations
-Stake Slashing: Discourages false submissions through economic penalty
+Then the submission needs to be finalized. The smart contract queries Flare's FTSO or Data Connector to get the real-world data and compare it with what was submitted.
 
-Oracle Consensus: Submissions only finalized if oracle data confirms correctness (no single-point-of-failure)
+Based on this comparison, the smart contract updates the reputation score. If the data matches the oracle data, the reputation goes up and the stake is returned with rewards. If it doesn't match, the reputation goes down and some stake is slashed.
 
-Access Control: Only submitter can withdraw their stake; only contract owner can adjust parameters
+Finally, the reputation score is now stored on the blockchain in the reputation mapping. Any other dApp on Flare can query this score to know how trustworthy this wallet is. The user can also check their own reputation in the dApp dashboard.
 
-Immutable History: All submissions & updates recorded on-chain; fully auditable
+8.GETTING STARTED
 
-🧪 Testing & Deployment
-Compile Contracts
-bash
-npx hardhat compile
-Deploy to Flare Coston2 Testnet
-bash
-npx hardhat run scripts/deploy.js --network coston2
-Verify Contract (optional)
-bash
-npx hardhat verify <CONTRACT_ADDRESS> --network coston2
-📁 Project Structure
-text
-Flare-Hackathon-1/
-├── contracts/                  # Smart contracts (Solidity)
-│   ├── ReputationSystem.sol    # Main reputation contract
-│   ├── scripts/
-│   │   └── deploy.js           # Deployment script
-│   └── hardhat.config.js       # Hardhat config
-│
-├── frontend/                   # Next.js/React dApp
-│   ├── app/
-│   │   ├── page.tsx            # Main page
-│   │   └── layout.tsx          # Layout wrapper
-│   ├── components/             # React components
-│   ├── hooks/                  # Custom React hooks (Web3 integration)
-│   ├── lib/                    # Utilities & helpers
-│   ├── config.ts               # Contract ABI & addresses
-│   └── package.json
-│
-└── README.md                   # This file
-🎓 Key Web3 Concepts
-Concept	How We Use It
-Smart Contracts	Automatic rules for reputation updates; no admin intervention
-Blockchain Immutability	Submissions & scores cannot be changed after recorded
-PoS Consensus	Flare validators secure the network; our contract lives on it
-Oracles (FTSO)	Compare user data with real-world truth; unbiased verification
-Wallet Signing	Users sign transactions with private keys; proves ownership
-State Variables	On-chain storage of reputation scores; permanent record
-🚧 Future Enhancements
- Weighted Reputation – Different data types worth different points
+To run this project you need Node.js version 16 or higher, npm or yarn, MetaMask or a compatible wallet, and Flare Coston2 testnet tokens which you can get for free from a faucet.
 
- Delegation – Users delegate their validation power to trusted parties
+To install, first clone the repository from GitHub. Then go into the contracts folder, install dependencies with npm install, compile the smart contracts with npx hardhat compile, and deploy them to the Flare Coston2 testnet with npx hardhat run scripts deploy.js.
 
- Multi-DAO Support – Each DAO has its own reputation namespace
+Then go into the frontend app folder, install dependencies, and run npm run dev to start the development server. Open your browser to localhost 3000, connect your wallet, and you can start submitting data.
 
- AI Verification – Combine oracle + ML for complex data validation
+9.WHY FLARE
 
- Cross-Chain Bridges – Reputation scores usable on other blockchains
+Flare is the best blockchain for this project for several reasons. First, Flare is specifically designed as a blockchain for data, so it has built-in oracle technology called FTSO and Data Connector. This means we don't have to use external oracle services. Second, Flare is EVM-compatible so we can write Solidity code and use tools like Hardhat just like on Ethereum. Third, Flare uses Proof of Stake consensus which is fast and efficient with low transaction costs. Fourth, Flare's ecosystem is growing and reputation systems are seen as critical infrastructure for Web3 data marketplaces.
 
+10.KEY WEB3 CONCEPTS USED
 
+Smart contracts are the key concept. Instead of a company deciding reputation scores, the smart contract code automatically enforces the reputation rules for everyone equally.
+
+Blockchain immutability means once a submission or reputation update is recorded in a block, it cannot be changed or deleted. This prevents cheating.
+
+Proof of Stake consensus on Flare means validators with staked coins propose and verify blocks. Our contract lives on this secure layer.
+
+Oracles like FTSO provide real-world data so the contract can verify whether submitted data is actually true.
+
+Wallet signing means users sign transactions with their private key, which proves they own that wallet and authorized that action.
+
+State variables are the on-chain storage where reputation scores live permanently on the blockchain.
+
+11.SECURITY CONSIDERATIONS
+
+Stake slashing discourages false submissions because users lose tokens when they lie.
+
+Oracle consensus means submissions are only finalized if the oracle data confirms they are correct, so there is no single point of failure.
+
+Access control means only the submitter can withdraw their stake and only the contract owner can adjust system parameters.
+
+Immutable history means all submissions and updates are recorded on the blockchain forever, so everything is fully auditable.
+
+12.PROJECT FILE STRUCTURE
+
+The contracts folder contains all the Solidity smart contract code, the deployment script, and the Hardhat configuration.
+
+The frontend folder contains the Next.js and React code for the user interface. It has components for the UI, hooks for Web3 integration, utilities and helpers, and the configuration file that stores the contract ABI and addresses.
+
+13.HOW TO USE THE DAPP
+
+As a data submitter, you connect your wallet to the application, enter the data you want to submit like a weather reading or a review, approve the stake amount, and click submit. Your wallet signs the transaction which gets recorded on-chain.
+
+As a validator, you browse the list of pending submissions, review each one and decide if it is true or false, and vote via the contract function. You earn small rewards if the majority agrees with your vote.
+
+To check your reputation, you can view your reputation score in the dApp dashboard. The score equals the number of correct submissions you made minus penalties for false submissions. A higher score means more people trust your data.
 
